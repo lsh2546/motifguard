@@ -1,6 +1,9 @@
 name: MotifGuard CI
 
 on:
+  push:
+    branches:
+      - codex/integrate-motifguard-history
   pull_request:
     branches:
       - main
