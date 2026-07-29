@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { NextResponse } from "next/server";
 
 const allowed = new Set(["image/png", "image/jpeg", "image/webp"]);
@@ -14,10 +15,11 @@ export async function POST(request: Request) {
       if (!allowed.has(file.type)) return NextResponse.json({ error: "Only PNG, JPG, and WebP images are supported." }, { status: 415 });
       if (file.size > maxBytes) return NextResponse.json({ error: "Each image must be 8 MB or smaller." }, { status: 413 });
     }
-    const apiKey = process.env.GEMINI_API_KEY;
+    const runtimeEnv = env as unknown as { GEMINI_API_KEY?: string; GEMMA_MODEL?: string };
+    const apiKey = runtimeEnv.GEMINI_API_KEY;
     if (!apiKey) return NextResponse.json({ error: "Live AI is being connected. Please try the verified sample for now." }, { status: 503 });
     const encode = async (file: File) => Buffer.from(await file.arrayBuffer()).toString("base64");
-    const model = process.env.GEMMA_MODEL || "gemma-4-26b-a4b-it";
+    const model = runtimeEnv.GEMMA_MODEL || "gemma-4-26b-a4b-it";
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contents: [{ role: "user", parts: [
