@@ -21,3 +21,13 @@ test("sample runs are not counted as live analyses", async () => {
   assert.match(events, /event_type='analysis_completed'/);
   assert.match(events, /sample_run/);
 });
+
+test("uploads are compressed, retried, and handle non-JSON 413 responses", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /uploadTargetBytes = 400_000/);
+  assert.match(page, /retryTargetBytes = 250_000/);
+  assert.match(page, /createImageBitmap/);
+  assert.match(page, /response\.status === 413/);
+  assert.match(page, /contentType\.includes\("application\/json"\)/);
+  assert.match(page, /still too large after compression/);
+});
