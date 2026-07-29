@@ -7,6 +7,58 @@ type Audit = { score: number; verdict: string; intent: string; evidence: Evidenc
 type Metrics = { visitors: number; visits: number; analyses: number; feedback: number };
 type Upload = { file: File | null; url: string | null };
 
+const acceptedImageTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
+const maxSourceBytes = 8_000_000;
+const uploadTargetBytes = 400_000;
+const retryTargetBytes = 250_000;
+
+async function compressImage(file: File, targetBytes: number): Promise<File> {
+  const bitmap = await createImageBitmap(file);
+  const dimensions = [1600, 1280, 1024, 800];
+  const qualities = [.82, .72, .62, .52];
+  let smallest: Blob | null = null;
+
+  try {
+    for (const maxDimension of dimensions) {
+      const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Your browser could not prepare this image.");
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+      for (const quality of qualities) {
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/jpeg", quality));
+        if (!blob) continue;
+        if (!smallest || blob.size < smallest.size) smallest = blob;
+        if (blob.size <= targetBytes) {
+          return new File([blob], `${file.name.replace(/\.[^.]+$/, "") || "motifguard"}.jpg`, {
+            type: "image/jpeg",
+            lastModified: file.lastModified,
+          });
+        }
+      }
+    }
+  } finally {
+    bitmap.close();
+  }
+
+  if (!smallest) throw new Error("Your browser could not compress this image.");
+  return new File([smallest], `${file.name.replace(/\.[^.]+$/, "") || "motifguard"}.jpg`, {
+    type: "image/jpeg",
+    lastModified: file.lastModified,
+  });
+}
+
+async function readResponse(response: Response): Promise<Record<string, unknown>> {
+  const contentType = response.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    return await response.json() as Record<string, unknown>;
+  }
+  return {};
+}
+
 const sampleAudit: Audit = {
   score: 78,
   verdict: "The silhouette survived, but the signature rear tension did not.",
@@ -65,15 +117,22 @@ export default function Home() {
   }, []);
 
   function choose(setter: (upload: Upload) => void) {
-    return (event: ChangeEvent<HTMLInputElement>) => {
+    return async (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
-      if (!["image/png", "image/jpeg", "image/webp"].includes(file.type) || file.size > 8_000_000) {
+      if (!acceptedImageTypes.has(file.type) || file.size > maxSourceBytes) {
         setError("Use a PNG, JPG, or WebP image no larger than 8 MB.");
         return;
       }
-      setter({ file, url: URL.createObjectURL(file) });
-      setSample(false); setAudit(null); setError(""); setFeedbackSent(false);
+      try {
+        const prepared = await compressImage(file, uploadTargetBytes);
+        setter({ file: prepared, url: URL.createObjectURL(prepared) });
+        setSample(false); setAudit(null); setError(""); setFeedbackSent(false);
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : "This image could not be prepared. Please try a JPG or WebP file.");
+      } finally {
+        event.target.value = "";
+      }
     };
   }
 
@@ -89,12 +148,29 @@ export default function Home() {
       if (sample) {
         setAudit(sampleAudit); await record("sample_run");
       } else {
-        const body = new FormData();
-        body.append("source", source.file!); body.append("result", result.file!);
-        const response = await fetch("/api/analyze", { method: "POST", body });
-        const payload = await response.json();
-        if (!response.ok) throw new Error(payload.error || "The analysis could not be completed.");
-        setAudit(payload); await record("analysis_completed");
+        const submit = async (sourceFile: File, resultFile: File) => {
+          const body = new FormData();
+          body.append("source", sourceFile); body.append("result", resultFile);
+          return await fetch("/api/analyze", { method: "POST", body });
+        };
+
+        let response = await submit(source.file!, result.file!);
+        if (response.status === 413) {
+          const [smallerSource, smallerResult] = await Promise.all([
+            compressImage(source.file!, retryTargetBytes),
+            compressImage(result.file!, retryTargetBytes),
+          ]);
+          response = await submit(smallerSource, smallerResult);
+        }
+
+        const payload = await readResponse(response);
+        if (!response.ok) {
+          if (response.status === 413) {
+            throw new Error("These images are still too large after compression. Please crop them or export smaller JPG/WebP files.");
+          }
+          throw new Error(typeof payload.error === "string" ? payload.error : "The analysis could not be completed. Please retry.");
+        }
+        setAudit(payload as Audit); await record("analysis_completed");
       }
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "The analysis could not be completed.");
