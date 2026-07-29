@@ -11,7 +11,7 @@ test("product is independently branded and exposes required evidence", async () 
 
 test("live analysis validates inputs and never embeds an API key", async () => {
   const route = await readFile(new URL("../app/api/analyze/route.ts", import.meta.url), "utf8");
-  assert.match(route, /process\.env\.GEMINI_API_KEY/);
+  assert.match(route, /runtimeEnv\.GEMINI_API_KEY/);
   assert.match(route, /8_000_000/);
   assert.doesNotMatch(route, /AIza[0-9A-Za-z_-]{20,}/);
 });
