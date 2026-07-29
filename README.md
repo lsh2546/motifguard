@@ -30,12 +30,12 @@ The D1 event log also records sample runs and failed analyses for debugging. Met
 
 ## Local setup
 
-Requirements: Node.js 22.13+ and npm.
+Requirements: Node.js 22.13+ and pnpm 10.
 
 ```bash
-npm install
+pnpm install --frozen-lockfile
 copy .env.example .env.local
-npm run dev
+pnpm dev
 ```
 
 Set `GEMINI_API_KEY` to a free-tier Google AI Studio key. `GEMMA_MODEL` is optional and defaults to `gemma-4-26b-a4b-it`.
@@ -43,9 +43,9 @@ Set `GEMINI_API_KEY` to a free-tier Google AI Studio key. `GEMMA_MODEL` is optio
 ## Verification
 
 ```bash
-npm run build
-npm test
-npm run lint
+pnpm test
+pnpm run build
+pnpm exec eslint .
 ```
 
 ## Deployment
