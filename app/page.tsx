@@ -7,6 +7,19 @@ type Audit = { score: number; verdict: string; intent: string; evidence: Evidenc
 type Metrics = { visitors: number; visits: number; analyses: number; feedback: number };
 type Upload = { file: File | null; url: string | null };
 
+const inRange = (value: unknown, minimum: number, maximum: number) =>
+  typeof value === "number" && Number.isFinite(value) && value >= minimum && value <= maximum;
+
+function isAudit(payload: Record<string, unknown>): payload is Audit & Record<string, unknown> {
+  if (!inRange(payload.score, 0, 100) || !Array.isArray(payload.evidence) || payload.evidence.length !== 4) return false;
+  return payload.evidence.every(item => {
+    if (!item || typeof item !== "object") return false;
+    const evidence = item as Record<string, unknown>;
+    return ["preserved", "drifted", "lost"].includes(String(evidence.status))
+      && inRange(evidence.confidence, 0, 1);
+  });
+}
+
 const acceptedImageTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
 const maxSourceBytes = 8_000_000;
 const uploadTargetBytes = 400_000;
@@ -170,7 +183,8 @@ export default function Home() {
           }
           throw new Error(typeof payload.error === "string" ? payload.error : "The analysis could not be completed. Please retry.");
         }
-        setAudit(payload as Audit); await record("analysis_completed");
+        if (!isAudit(payload)) throw new Error("The AI returned an invalid score or confidence scale. Please retry.");
+        setAudit(payload); await record("analysis_completed");
       }
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "The analysis could not be completed.");
