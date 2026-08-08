@@ -22,6 +22,20 @@ test("sample runs are not counted as live analyses", async () => {
   assert.match(events, /sample_run/);
 });
 
+test("overall score and evidence confidence use explicit separate ranges", async () => {
+  const route = await readFile(new URL("../app/api/analyze/route.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(route, /overall score must be a finite number from 0 through 100 inclusive/i);
+  assert.match(route, /Do not return the overall score as a 0-to-1 normalized fraction/);
+  assert.match(route, /Evidence confidence uses a separate contract/);
+  assert.match(route, /isFiniteNumberInRange\(audit\.score, 0, 100\)/);
+  assert.match(route, /isFiniteNumberInRange\(evidence\.confidence, 0, 1\)/);
+  assert.match(page, /inRange\(payload\.score, 0, 100\)/);
+  assert.match(page, /inRange\(evidence\.confidence, 0, 1\)/);
+  assert.match(page, /\{audit\.score\}<small>\/100<\/small>/);
+  assert.match(page, /Math\.round\(item\.confidence \* 100\)\}%/);
+});
+
 test("uploads are compressed, retried, and handle non-JSON 413 responses", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /uploadTargetBytes = 400_000/);
