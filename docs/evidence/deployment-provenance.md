@@ -8,14 +8,14 @@ validated artifact used for the final judge-verification release.
 | Production URL | <https://motifguard.ljs2546.chatgpt.site/> |
 | GitHub repository | <https://github.com/lsh2546/motifguard> |
 | Source branch | `main` |
-| Source commit | [`1b3e5bfdebc5d4337582a37584df1f21084d470b`](https://github.com/lsh2546/motifguard/commit/1b3e5bfdebc5d4337582a37584df1f21084d470b) |
-| Product hardening PRs | [#14](https://github.com/lsh2546/motifguard/pull/14), [#15](https://github.com/lsh2546/motifguard/pull/15) |
-| PR CI run | [MotifGuard CI #18](https://github.com/lsh2546/motifguard/actions/runs/31305606690) |
+| Source commit | [`8b16a5ad78298acc5c439d3f43b74f7f2625e375`](https://github.com/lsh2546/motifguard/commit/8b16a5ad78298acc5c439d3f43b74f7f2625e375) |
+| Final hardening PRs | [#14](https://github.com/lsh2546/motifguard/pull/14), [#15](https://github.com/lsh2546/motifguard/pull/15), [#17](https://github.com/lsh2546/motifguard/pull/17), [#18](https://github.com/lsh2546/motifguard/pull/18) |
+| PR CI run | [MotifGuard CI #21](https://github.com/lsh2546/motifguard/actions/runs/31306381733) |
 | CI conclusion | `success` |
-| Sites version | `8` |
+| Sites version | `10` |
 | Deployment status | `succeeded` |
-| Deployment timestamp | `2026-08-09T09:20:45.537585Z` |
-| Sites archive SHA-256 | `aa68367fd5dac30d3b1aa14a03309a35085f50d97ac2d5dc9dc3e86a595e5a49` |
+| Deployment timestamp | `2026-08-09T09:40:06.437362Z` |
+| Sites archive SHA-256 | `0f9fc11d9594aa5d179813abda46ad2c3d0d4634ee4092718d6d0c73006f1226` |
 
 The deployed UI links the Case 02 revision-loop report, raw production API
 response, and SHA-256 manifest. It also supports live revision-baseline
@@ -37,6 +37,8 @@ and audience/traction counting rules are unchanged.
   retry, timeout, and `motifguard.audit.v1` artifact contracts.
 - A malformed production API request returned HTTP 400 after the runtime-safe
   error-boundary fix instead of the previously reproduced HTTP 500.
+- Client and server use the same executable audit validator; CI runs positive
+  and negative fixtures against that function.
 
 ## Preserved deployment history
 
