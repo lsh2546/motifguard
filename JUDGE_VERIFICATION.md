@@ -39,6 +39,7 @@ render, revised render, upload derivatives, and raw response.
 
 ## 4. Verify engineering claims
 
+- [Production deployment provenance](docs/evidence/deployment-provenance.md)
 - [CI workflow](https://github.com/lsh2546/motifguard/actions/workflows/ci.yml)
 - [Contract tests](tests/product-contract.test.mjs)
 - [Analysis API implementation](app/api/analyze/route.ts)
@@ -48,6 +49,9 @@ render, revised render, upload derivatives, and raw response.
 The tests distinguish the 0-100 overall score from 0-1 evidence confidence,
 reject malformed model output, ensure sample runs are not counted as live
 analyses, and verify graceful handling of oversized uploads.
+
+The provenance record binds the public deployment to its exact GitHub commit,
+successful CI run, packaged artifact hash, and deployment timestamp.
 
 ## 5. Verify privacy and claim boundaries
 
