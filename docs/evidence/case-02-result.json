@@ -1,0 +1,56 @@
+{
+  "case_id": "case-02",
+  "classification": "developer_validation",
+  "traction_eligible": false,
+  "production_url": "https://motifguard.ljs2546.chatgpt.site/",
+  "analyzed_at_kst": "2026-08-08T19:04:08.581+09:00",
+  "analysis_mode": "LIVE AI",
+  "model_displayed": "gemma-4-26b-a4b-it",
+  "intent_fidelity": 85,
+  "verdict": "The AI render successfully translates the core design language and silhouette of the sketch into a realistic form.",
+  "intent": "To evaluate the fidelity of the AI-generated render against the original design intent expressed in the source sketch.",
+  "evidence": [
+    {
+      "status": "preserved",
+      "feature": "overall silhouette",
+      "confidence": 98,
+      "source": "low-slung, fastback coupe profile with a long hood and short rear deck",
+      "render": "identical low-slung, fastback coupe profile",
+      "finding": "Maintains the fundamental vehicle architecture and stance"
+    },
+    {
+      "status": "preserved",
+      "feature": "headlight graphic",
+      "confidence": 95,
+      "source": "sharp, angular, Y-shaped or boomerang-style headlight housing",
+      "render": "distinctive, sharp angular headlight element with integrated LED strip",
+      "finding": "Preserves the primary brand identity and facial expression"
+    },
+    {
+      "status": "drifted",
+      "feature": "side vent/character line",
+      "confidence": 88,
+      "source": "deep, aggressive triangular air intake/sculpture behind the front wheel",
+      "render": "more integrated, shallower sculptural element with a blacked-out insert",
+      "finding": "The depth and aggression of the side sculpting are softened in the render"
+    },
+    {
+      "status": "drifted",
+      "feature": "wheel design",
+      "confidence": 90,
+      "source": "multi-spoke, thin-profile star pattern",
+      "render": "thicker, more robust multi-spoke design with different spoke spacing",
+      "finding": "The wheel geometry has changed from a delicate sketch to a more heavy-duty render"
+    }
+  ],
+  "preserved_count": 2,
+  "changed_count": 2,
+  "lost_count": 0,
+  "revision_brief": "Increase the depth and sharpness of the side air intake sculpture and refine the wheel spoke thinness to match the original sketch's elegance.",
+  "prompt_patch": "highly detailed automotive render, sharp deep triangular side air intake sculpture, thin elegant multi-spoke star-pattern wheels, aggressive surface tension, matching the exact proportions of the source sketch",
+  "source_image": "case-02-source-sketch.png",
+  "source_sha256": "63E1AF7DBD507C8B03524C66B565823A64A349A42C45CA8C03D98172EE9A7249",
+  "render_image": "case-02-ai-render.png",
+  "render_sha256": "6EA2FC03DB69887C1F3FC7FCE605E39892F5D01BEA31A57D9B683D6BBCCA6004",
+  "notes": "Current-production developer validation. Must not be counted as a real user, traction, testimonial, or independent usage."
+}

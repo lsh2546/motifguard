@@ -1,0 +1,48 @@
+{
+  "case_id": "case-03-score-contract-controlled",
+  "classification": "developer_validation",
+  "traction_eligible": false,
+  "production_url": "https://motifguard.ljs2546.chatgpt.site/",
+  "repository_commit": "f3353430b875ef92e41552222d5eb8b77af92350",
+  "sites_version": 4,
+  "deployment_id": "appgdep_6a7722a7b62481918a895fde26951bac",
+  "deployment_succeeded_at_utc": "2026-08-08T12:36:04.729927Z",
+  "controlled_analysis": {
+    "successful_model_runs": 1,
+    "http_status": 200,
+    "response_date_utc": "2026-08-08T12:42:40Z",
+    "raw_response_file": "api-analyze-controlled-raw-response.json",
+    "raw_response_sha256": "8DA0AA1A875B0AA9C145C2C1B81C7B86E54DF08FC4C2050E0CC105BC4CBC80E4",
+    "score": 92,
+    "model": "gemma-4-26b-a4b-it"
+  },
+  "transport_preflight": {
+    "http_status": 413,
+    "model_invoked": false,
+    "response_file": "api-analyze-raw-response.json",
+    "response_sha256": "59DB9CDFA4E0E45D2D5229654F7B4D0B015B9DFF35ED89C65597EB88836A473C"
+  },
+  "inputs": {
+    "historical_source_sha256": "E9FBEC6F5B29C7FB9A19B7031ABF7ECFC241EA8402C810013929ECC7C1DC6BB6",
+    "historical_corrected_render_sha256": "E487EA44922DBDDA12B9CC394004EBDB51B05EF50DEF8CBED9860A9F4AA97B4B",
+    "prepared_source_file": "source-upload-400k.jpg",
+    "prepared_source_sha256": "6A9C3535958E7C20870CAE73A13AFD4FFA0AF7E0A27014EFEE51D81AF7E48B0F",
+    "prepared_render_file": "result-upload-400k.jpg",
+    "prepared_render_sha256": "84F4A11A24944067A5E8491E979CF502D39F11D1AD1FFFC81969C0638D3DF0DD"
+  },
+  "ui_verification": {
+    "mode": "deterministic_replay_no_model_or_analytics",
+    "field_comparison_file": "field-comparison.json",
+    "all_fields_match": true,
+    "result_screenshot_file": "case-03-controlled-ui-result-viewport.png",
+    "result_screenshot_sha256": "699F11F465717867BC36EA14A66D79202AB0CCC3FADA9B7660BDD5D5998656E3",
+    "screenshot_at_utc": "2026-08-08T12:45:53.056Z"
+  },
+  "production_metrics_after_validation": {
+    "visitors": 9,
+    "visits": 18,
+    "analyses": 5,
+    "feedback": 0
+  },
+  "historical_evidence_modified": false
+}

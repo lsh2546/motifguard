@@ -28,6 +28,19 @@ The public counter records:
 
 The D1 event log also records sample runs and failed analyses for debugging. Metrics begin at zero and represent real activity only.
 
+## Verified production cases
+
+MotifGuard currently publishes two controlled developer-validation cases. They demonstrate the production workflow and score contract, but they are **not** counted as independent users, traction, testimonials, or product adoption.
+
+| Case | Result | Preserved | Drifted | Lost | Evidence |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Case 02 | 85/100 | 2 | 2 | 0 | [Panel](docs/evidence/case-02-evidence-panel-1600x900.png) · [Result JSON](docs/evidence/case-02-result.json) |
+| Case 03 | 92/100 | 3 | 1 | 0 | [Panel](docs/evidence/case-03-evidence-panel-1600x900.png) · [Raw API response](docs/evidence/case-03-api-analyze-raw-response.json) · [Manifest](docs/evidence/case-03-manifest.json) |
+
+Case 03 is the controlled score-contract verification: the production API returned HTTP 200 with raw score `92`, and the UI displayed `92/100`. The historical `0.85/100` display remains a historical record and is not retrospectively converted to 85.
+
+The production dashboard currently contains mixed operational telemetry from developer checks and controlled validation. The verified independent-user ledger remains: **0 users, 0 completed real-user analyses, 0 return users, and 0 consented testimonials**.
+
 ## Local setup
 
 Requirements: Node.js 22.13+ and pnpm 10.
