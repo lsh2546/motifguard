@@ -1,5 +1,9 @@
 # MotifGuard
 
+[![MotifGuard CI](https://github.com/lsh2546/motifguard/actions/workflows/ci.yml/badge.svg)](https://github.com/lsh2546/motifguard/actions/workflows/ci.yml)
+
+**Judge verification:** [open the public product, reproduce the workflow, and audit the immutable evidence in five minutes](JUDGE_VERIFICATION.md).
+
 MotifGuard is an AI automotive design-intent auditor. A car designer uploads a source sketch and an AI-generated render; MotifGuard shows what was preserved, changed, or lost and returns a revision brief plus a copy-ready prompt patch.
 
 ## Product scope
