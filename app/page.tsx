@@ -89,6 +89,11 @@ const sampleAudit: Audit = {
 };
 
 const emptyMetrics = { visitors: 0, visits: 0, analyses: 0, feedback: 0 };
+const evidenceCounts = (items: Evidence[]) => ({
+  preserved: items.filter(item => item.status === "preserved").length,
+  drifted: items.filter(item => item.status === "drifted").length,
+  lost: items.filter(item => item.status === "lost").length,
+});
 
 export default function Home() {
   const [source, setSource] = useState<Upload>({ file: null, url: null });
@@ -100,6 +105,7 @@ export default function Home() {
   const [metrics, setMetrics] = useState<Metrics>(emptyMetrics);
   const [feedback, setFeedback] = useState("");
   const [feedbackSent, setFeedbackSent] = useState(false);
+  const [revisionBaseline, setRevisionBaseline] = useState<Audit | null>(null);
   const sourceRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLInputElement>(null);
 
@@ -129,7 +135,7 @@ export default function Home() {
       .catch(() => undefined);
   }, []);
 
-  function choose(setter: (upload: Upload) => void) {
+  function choose(setter: (upload: Upload) => void, resetsRevision: boolean) {
     return async (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
@@ -140,6 +146,7 @@ export default function Home() {
       try {
         const prepared = await compressImage(file, uploadTargetBytes);
         setter({ file: prepared, url: URL.createObjectURL(prepared) });
+        if (resetsRevision) setRevisionBaseline(null);
         setSample(false); setAudit(null); setError(""); setFeedbackSent(false);
       } catch (cause) {
         setError(cause instanceof Error ? cause.message : "This image could not be prepared. Please try a JPG or WebP file.");
@@ -151,7 +158,7 @@ export default function Home() {
 
   function loadSample() {
     setSource({ file: null, url: "/og.webp" }); setResult({ file: null, url: "/og.webp" });
-    setSample(true); setAudit(null); setError(""); setFeedbackSent(false);
+    setSample(true); setAudit(null); setError(""); setFeedbackSent(false); setRevisionBaseline(null);
   }
 
   async function runAudit() {
@@ -210,7 +217,7 @@ export default function Home() {
     <section className="studio">
       <div className="sectionHead"><span>01 / COMPARE</span><span>{ready ? "TWO VIEWS READY" : "ADD TWO VIEWS"}</span></div>
       <div className="compareGrid">
-        {[["A", "SOURCE SKETCH", source, sourceRef, setSource], ["B", "AI RENDER", result, resultRef, setResult]].map(([index, title, upload, ref, setter]) => {
+        {[["A", "SOURCE SKETCH", source, sourceRef, setSource, true], ["B", "AI RENDER", result, resultRef, setResult, false]].map(([index, title, upload, ref, setter, resetsRevision]) => {
           const item = upload as Upload; const input = ref as React.RefObject<HTMLInputElement | null>;
           return <div className="uploadCard" key={title as string}>
             <div className="cardLabel"><span>{index as string}</span><strong>{title as string}</strong></div>
@@ -221,7 +228,7 @@ export default function Home() {
                 <img src={item.url} alt={title as string} />
               </> : <span>DROP OR BROWSE<br /><small>PNG / JPG / WEBP · MAX 8 MB</small></span>}
             </button>
-            <input ref={input} hidden type="file" accept="image/png,image/jpeg,image/webp" onChange={choose(setter as (upload: Upload) => void)} />
+            <input ref={input} hidden type="file" accept="image/png,image/jpeg,image/webp" onChange={choose(setter as (upload: Upload) => void, resetsRevision as boolean)} />
           </div>;
         })}
       </div>
@@ -236,7 +243,21 @@ export default function Home() {
       {audit && <div className="audit">
         <aside><p>INTENT FIDELITY</p><strong className="score">{audit.score}<small>/100</small></strong><h2>{audit.verdict}</h2><p>{audit.intent}</p></aside>
         <div className="evidenceList">{audit.evidence.map(item => <article key={item.feature}><span className={item.status}>{item.status}</span><h3>{item.feature} · {Math.round(item.confidence * 100)}%</h3><p><b>Sketch:</b> {item.sourceEvidence}</p><p><b>Render:</b> {item.resultEvidence}</p><p>{item.reason}</p></article>)}</div>
-        <div className="actions"><h3>NEXT ITERATION</h3><p>{audit.brief}</p><h3>PROMPT PATCH</h3><p>{audit.promptPatch}</p></div>
+        <div className="actions"><h3>NEXT ITERATION</h3><p>{audit.brief}</p><h3>PROMPT PATCH</h3><p>{audit.promptPatch}</p>
+          {audit.mode !== "sample" && <button className="baselineButton" onClick={() => setRevisionBaseline(audit)}>SAVE AS REVISION BASELINE</button>}
+        </div>
+        {revisionBaseline && audit.mode !== "sample" && (() => {
+          const before = evidenceCounts(revisionBaseline.evidence);
+          const after = evidenceCounts(audit.evidence);
+          const delta = audit.score - revisionBaseline.score;
+          return <div className="revisionDelta">
+            <div><p>REVISION DELTA</p><strong>{delta >= 0 ? "+" : ""}{delta}<small> points</small></strong></div>
+            <div><p>INTENT FIDELITY</p><strong>{revisionBaseline.score} → {audit.score}</strong></div>
+            <div><p>DRIFTED</p><strong>{before.drifted} → {after.drifted}</strong></div>
+            <div><p>LOST</p><strong>{before.lost} → {after.lost}</strong></div>
+            <small>Comparison uses two live audits of the same source sketch. Review individual evidence before accepting a revision.</small>
+          </div>;
+        })()}
         <div className="feedback"><h3>Was this analysis useful?</h3><textarea value={feedback} onChange={e => setFeedback(e.target.value)} placeholder="Optional feedback (500 characters)" maxLength={500} />
           {feedbackSent ? <p>Thank you. Your feedback was recorded.</p> : <div><button onClick={() => sendFeedback("helpful")}>YES, HELPFUL</button><button onClick={() => sendFeedback("not_helpful")}>NOT YET</button></div>}
         </div>

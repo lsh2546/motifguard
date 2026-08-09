@@ -49,3 +49,12 @@ test("uploads are compressed, retried, and handle non-JSON 413 responses", async
   assert.match(page, /contentType\.includes\("application\/json"\)/);
   assert.match(page, /still too large after compression/);
 });
+
+test("live audits can be compared as an honest revision loop", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /SAVE AS REVISION BASELINE/);
+  assert.match(page, /REVISION DELTA/);
+  assert.match(page, /revisionBaseline\.score/);
+  assert.match(page, /evidenceCounts/);
+  assert.match(page, /Review individual evidence before accepting a revision/);
+});
