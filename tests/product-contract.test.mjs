@@ -27,6 +27,17 @@ test("sample runs are not counted as live analyses", async () => {
   assert.match(events, /sample_run/);
 });
 
+test("the verified sample displays the exact Case 02 input pair and audit", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../public/case-02-source-sketch.png", import.meta.url));
+  const render = await readFile(new URL("../public/case-02-initial-render.png", import.meta.url));
+  assert.match(page, /case-02-source-sketch\.png/);
+  assert.match(page, /case-02-initial-render\.png/);
+  assert.match(page, /score: 85/);
+  assert.match(page, /Side vent \/ character line/);
+  assert.notDeepEqual(source, render);
+});
+
 test("overall score and evidence confidence use explicit separate ranges", async () => {
   const route = await readFile(new URL("../app/api/analyze/route.ts", import.meta.url), "utf8");
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");

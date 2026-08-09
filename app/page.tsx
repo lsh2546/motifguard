@@ -65,17 +65,17 @@ async function readResponse(response: Response): Promise<Record<string, unknown>
 }
 
 const sampleAudit: Audit = {
-  score: 78,
-  verdict: "The silhouette survived, but the signature rear tension did not.",
-  intent: "A low electric grand tourer defined by a rising rear shoulder, cab-rearward balance, and a calm lower-body gesture.",
+  score: 85,
+  verdict: "The AI render successfully translates the core design language and silhouette of the sketch into a realistic form.",
+  intent: "Evaluate the fidelity of the AI-generated render against the original design intent expressed in the source sketch.",
   evidence: [
-    { feature: "Cab-rearward proportion", status: "preserved", sourceEvidence: "Short front overhang and greenhouse peak behind the midpoint", resultEvidence: "The render keeps the same visual weight distribution", reason: "The primary stance remains legible.", confidence: .96 },
-    { feature: "Rising shoulder", status: "drifted", sourceEvidence: "The sketch climbs decisively through the rear quarter", resultEvidence: "The render resolves the line almost horizontally", reason: "The flatter transition weakens forward motion.", confidence: .93 },
-    { feature: "Lower graphic", status: "preserved", sourceEvidence: "One dark gesture connects both wheel volumes", resultEvidence: "The rocker treatment repeats that direction", reason: "The secondary graphic still supports the body gesture.", confidence: .89 },
-    { feature: "Rear taper", status: "lost", sourceEvidence: "The sketch narrows sharply behind the rear wheel", resultEvidence: "The render enlarges and rounds the tail", reason: "An ownable feature becomes a conventional GT volume.", confidence: .86 },
+    { feature: "Overall silhouette", status: "preserved", sourceEvidence: "Low-slung fastback coupe profile with a long hood and short rear deck", resultEvidence: "The render keeps the same low-slung fastback coupe profile", reason: "The fundamental vehicle architecture and stance remain intact.", confidence: .98 },
+    { feature: "Headlight graphic", status: "preserved", sourceEvidence: "Sharp angular Y-shaped or boomerang-style headlight housing", resultEvidence: "A distinctive sharp angular headlight element with an integrated LED strip", reason: "The primary brand identity and facial expression are preserved.", confidence: .95 },
+    { feature: "Side vent / character line", status: "drifted", sourceEvidence: "Deep aggressive triangular air-intake sculpture behind the front wheel", resultEvidence: "A shallower integrated sculptural element with a blacked-out insert", reason: "The depth and aggression of the side sculpting are softened.", confidence: .88 },
+    { feature: "Wheel design", status: "drifted", sourceEvidence: "Multi-spoke thin-profile star pattern", resultEvidence: "A thicker multi-spoke design with different spoke spacing", reason: "The wheel geometry changes from delicate to heavier-duty.", confidence: .90 },
   ],
-  brief: "Keep the cab position and lower blade. Restore the upward rear-quarter tension and reduce tail volume.",
-  promptPatch: "Preserve the original rising shoulder line and sharp rear taper; do not flatten the upper-body gesture or inflate the rear mass.",
+  brief: "Increase the depth and sharpness of the side air-intake sculpture and refine the wheel-spoke thinness to match the original sketch's elegance.",
+  promptPatch: "Highly detailed automotive render, sharp deep triangular side air-intake sculpture, thin elegant multi-spoke star-pattern wheels, aggressive surface tension, matching the exact proportions of the source sketch.",
   mode: "sample",
   model: "curated example",
 };
@@ -150,7 +150,8 @@ export default function Home() {
   }
 
   function loadSample() {
-    setSource({ file: null, url: "/og.webp" }); setResult({ file: null, url: "/og.webp" });
+    setSource({ file: null, url: "/case-02-source-sketch.png" });
+    setResult({ file: null, url: "/case-02-initial-render.png" });
     setSample(true); setAudit(null); setError(""); setFeedbackSent(false); setRevisionBaseline(null);
   }
 
