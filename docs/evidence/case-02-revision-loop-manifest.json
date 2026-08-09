@@ -1,0 +1,36 @@
+{
+  "case_id": "case-02-revision-loop",
+  "classification": "controlled_developer_validation",
+  "audience_eligible": false,
+  "traction_eligible": false,
+  "production_url": "https://motifguard.ljs2546.chatgpt.site/",
+  "reanalyzed_at": "2026-08-09T07:19:33Z",
+  "model": "gemma-4-26b-a4b-it",
+  "source_sha256": "63E1AF7DBD507C8B03524C66B565823A64A349A42C45CA8C03D98172EE9A7249",
+  "initial_render_sha256": "6EA2FC03DB69887C1F3FC7FCE605E39892F5D01BEA31A57D9B683D6BBCCA6004",
+  "revised_render_sha256": "F29B328A524DFE9BA15856ED13B6B182F694695B629A7B87E94229F2A1B97EA8",
+  "raw_reanalysis_response_sha256": "F4233A7F34D092538E93DC3F363FED6ACE1DAFB6F5D3042AD8681A3A12466D4C",
+  "upload_derivatives": {
+    "source_sha256": "28F7F1ED22573D9DC0FFBD7FB14DF6EF30DB2168BE3D24C0516177F2ABB87F56",
+    "revised_sha256": "1BE624C43519070A9C61ED12BB47A8670E9A2CB9FC97CA529401ED3E01939839"
+  },
+  "initial": {
+    "score": 85,
+    "drifted_items": 2,
+    "side_vent": { "status": "drifted", "confidence": 0.88 },
+    "wheel_design": { "status": "drifted", "confidence": 0.90 }
+  },
+  "reanalysis": {
+    "http_status": 200,
+    "api_time_seconds": 16.715643,
+    "score": 92,
+    "drifted_items": 1,
+    "side_character_line": { "status": "preserved", "confidence": 0.95 },
+    "wheel_design": { "status": "drifted", "confidence": 0.90 }
+  },
+  "delta": {
+    "score_points": 7,
+    "drifted_items": -1
+  },
+  "manual_review_baseline_measured": false
+}
