@@ -199,7 +199,7 @@ export default function Home() {
 
   const ready = Boolean(source.url && result.url);
   return <main>
-    <nav><a className="brand" href="#top"><span>M/</span>MOTIFGUARD</a><a href="#evidence">LIVE EVIDENCE</a></nav>
+    <nav><a className="brand" href="#top"><span>M/</span>MOTIFGUARD</a><a href="#proof">VERIFIED REVISION LOOP</a></nav>
     <header id="top">
       <p className="kicker">AI AUTOMOTIVE DESIGN INTENT AUDITOR</p>
       <h1>See what your AI render <em>kept, changed, and lost.</em></h1>
@@ -241,6 +241,31 @@ export default function Home() {
           {feedbackSent ? <p>Thank you. Your feedback was recorded.</p> : <div><button onClick={() => sendFeedback("helpful")}>YES, HELPFUL</button><button onClick={() => sendFeedback("not_helpful")}>NOT YET</button></div>}
         </div>
       </div>}
+    </section>
+
+    <section className="proof" id="proof">
+      <div className="sectionHead"><span>03 / VERIFIED ACTION</span><span>CONTROLLED DEVELOPER VALIDATION</span></div>
+      <div className="proofGrid">
+        <div>
+          <p className="kicker">CASE 02 / AUDITABLE END-TO-END PROOF</p>
+          <h2>Diagnose. Revise. Re-audit.</h2>
+          <p>MotifGuard scored the initial render at <strong>85/100</strong> and identified the side character line as drifted at 88%. Its Prompt Patch guided a revised render that scored <strong>92/100</strong>, with that feature preserved at 95%.</p>
+          <p>The wheel remained drifted at 90%. It is published as an unresolved finding, not hidden as a success.</p>
+        </div>
+        <ol>
+          <li><b>01</b><span>Source sketch + initial render</span></li>
+          <li><b>02</b><span>85/100 audit + Prompt Patch</span></li>
+          <li><b>03</b><span>Revised render</span></li>
+          <li><b>04</b><span>92/100 production re-audit</span></li>
+        </ol>
+      </div>
+      <div className="proofLinks">
+        <a href="https://github.com/lsh2546/motifguard/blob/main/JUDGE_VERIFICATION.md" target="_blank" rel="noreferrer">5-MINUTE JUDGE VERIFICATION</a>
+        <a href="https://github.com/lsh2546/motifguard/blob/main/docs/evidence/case-02-revision-loop.md" target="_blank" rel="noreferrer">CASE 02 EVIDENCE</a>
+        <a href="https://github.com/lsh2546/motifguard/blob/main/docs/evidence/case-02-reanalysis-raw-response.json" target="_blank" rel="noreferrer">RAW API RESPONSE</a>
+        <a href="https://github.com/lsh2546/motifguard/blob/main/docs/evidence/case-02-revision-loop-manifest.json" target="_blank" rel="noreferrer">SHA-256 MANIFEST</a>
+      </div>
+      <p className="proofBoundary">This controlled developer validation is reproducible product evidence. It is not counted as an independent user, audience reach, testimonial, or traction.</p>
     </section>
 
     <section className="metrics" id="evidence">
