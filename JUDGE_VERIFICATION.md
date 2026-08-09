@@ -60,7 +60,9 @@ The tests distinguish the 0-100 overall score from 0-1 evidence confidence,
 reject incomplete or duplicate-feature model output, ensure sample runs are not
 counted as live analyses, verify graceful handling of oversized uploads and
 bounded inference timeouts, keep the API key out of request URLs, and enforce
-the revision-comparison and portable-artifact contracts.
+the revision-comparison and portable-artifact contracts. The shared validator
+is executed against valid, out-of-range, incomplete, duplicate-feature,
+single-status, and invalid-confidence fixtures rather than checked only as text.
 
 The provenance record binds the public deployment to its exact GitHub commit,
 successful CI run, packaged artifact hash, and deployment timestamp.
