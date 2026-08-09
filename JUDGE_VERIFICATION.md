@@ -16,6 +16,9 @@ Open [the public MotifGuard deployment](https://motifguard.ljs2546.chatgpt.site/
 - After a live audit, **Save as Revision Baseline** keeps that result while the
   evaluator replaces only the AI render. A second live audit then displays the
   score, drifted-count, and lost-count deltas for the same source sketch.
+- **Copy Prompt Patch** moves the actionable instruction into the next
+  generation step, while **Download Audit JSON** exports a timestamped
+  `motifguard.audit.v1` decision artifact for review or archival.
 
 ## 2. Verify that the result can change an action
 
@@ -53,9 +56,10 @@ render, revised render, upload derivatives, and raw response.
 - [Anonymous event schema](app/api/events/route.ts)
 
 The tests distinguish the 0-100 overall score from 0-1 evidence confidence,
-reject malformed model output, ensure sample runs are not counted as live
-analyses, verify graceful handling of oversized uploads, and enforce the live
-revision-comparison contract.
+reject incomplete or duplicate-feature model output, ensure sample runs are not
+counted as live analyses, verify graceful handling of oversized uploads and
+bounded inference timeouts, keep the API key out of request URLs, and enforce
+the revision-comparison and portable-artifact contracts.
 
 The provenance record binds the public deployment to its exact GitHub commit,
 successful CI run, packaged artifact hash, and deployment timestamp.

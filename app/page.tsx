@@ -3,21 +3,29 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 type Evidence = { feature: string; status: "preserved" | "drifted" | "lost"; sourceEvidence: string; resultEvidence: string; reason: string; confidence: number };
-type Audit = { score: number; verdict: string; intent: string; evidence: Evidence[]; brief: string; promptPatch: string; mode?: string; model?: string };
+type Audit = { score: number; verdict: string; intent: string; evidence: Evidence[]; brief: string; promptPatch: string; mode?: string; model?: string; generatedAt?: string; requestId?: string };
 type Metrics = { visitors: number; visits: number; analyses: number; feedback: number };
 type Upload = { file: File | null; url: string | null };
 
 const inRange = (value: unknown, minimum: number, maximum: number) =>
   typeof value === "number" && Number.isFinite(value) && value >= minimum && value <= maximum;
+const isText = (value: unknown) => typeof value === "string" && value.trim().length > 0;
 
 function isAudit(payload: Record<string, unknown>): payload is Audit & Record<string, unknown> {
-  if (!inRange(payload.score, 0, 100) || !Array.isArray(payload.evidence) || payload.evidence.length !== 4) return false;
-  return payload.evidence.every(item => {
+  if (!inRange(payload.score, 0, 100)
+    || !isText(payload.verdict) || !isText(payload.intent) || !isText(payload.brief) || !isText(payload.promptPatch)
+    || !Array.isArray(payload.evidence) || payload.evidence.length !== 4) return false;
+  const features = new Set<string>();
+  const valid = payload.evidence.every(item => {
     if (!item || typeof item !== "object") return false;
     const evidence = item as Record<string, unknown>;
+    if (!isText(evidence.feature) || features.has(String(evidence.feature).trim().toLowerCase())) return false;
+    features.add(String(evidence.feature).trim().toLowerCase());
     return ["preserved", "drifted", "lost"].includes(String(evidence.status))
-      && inRange(evidence.confidence, 0, 1);
+      && inRange(evidence.confidence, 0, 1)
+      && isText(evidence.sourceEvidence) && isText(evidence.resultEvidence) && isText(evidence.reason);
   });
+  return valid && new Set(payload.evidence.map(item => String((item as Record<string, unknown>).status))).size >= 2;
 }
 
 const acceptedImageTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
@@ -106,6 +114,7 @@ export default function Home() {
   const [feedback, setFeedback] = useState("");
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [revisionBaseline, setRevisionBaseline] = useState<Audit | null>(null);
+  const [actionNotice, setActionNotice] = useState("");
   const sourceRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLInputElement>(null);
 
@@ -171,7 +180,7 @@ export default function Home() {
         const submit = async (sourceFile: File, resultFile: File) => {
           const body = new FormData();
           body.append("source", sourceFile); body.append("result", resultFile);
-          return await fetch("/api/analyze", { method: "POST", body });
+          return await fetch("/api/analyze", { method: "POST", body, signal: AbortSignal.timeout(70_000) });
         };
 
         let response = await submit(source.file!, result.file!);
@@ -194,7 +203,10 @@ export default function Home() {
         setAudit(payload); await record("analysis_completed");
       }
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "The analysis could not be completed.");
+      const message = cause instanceof DOMException && cause.name === "TimeoutError"
+        ? "The analysis timed out after 70 seconds. Your images remain selected; please retry."
+        : cause instanceof Error ? cause.message : "The analysis could not be completed.";
+      setError(message);
       await record("analysis_failed");
     } finally { setLoading(false); }
   }
@@ -202,6 +214,22 @@ export default function Home() {
   async function sendFeedback(rating: "helpful" | "not_helpful") {
     await record("feedback", JSON.stringify({ rating, comment: feedback.slice(0, 500) }));
     setFeedbackSent(true);
+  }
+
+  async function copyPromptPatch() {
+    if (!audit) return;
+    await navigator.clipboard.writeText(audit.promptPatch);
+    setActionNotice("Prompt Patch copied.");
+  }
+
+  function downloadAudit() {
+    if (!audit) return;
+    const artifact = { schema: "motifguard.audit.v1", exportedAt: new Date().toISOString(), audit };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(artifact, null, 2)], { type: "application/json" }));
+    const anchor = document.createElement("a");
+    anchor.href = url; anchor.download = `motifguard-audit-${audit.requestId || "result"}.json`; anchor.click();
+    URL.revokeObjectURL(url);
+    setActionNotice("Audit JSON downloaded.");
   }
 
   const ready = Boolean(source.url && result.url);
@@ -226,25 +254,28 @@ export default function Home() {
                 {/* User-selected object URLs are intentionally rendered directly. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={item.url} alt={title as string} />
-              </> : <span>DROP OR BROWSE<br /><small>PNG / JPG / WEBP · MAX 8 MB</small></span>}
+              </> : <span>DROP OR BROWSE<br /><small>PNG / JPG / WEBP / MAX 8 MB</small></span>}
             </button>
             <input ref={input} hidden type="file" accept="image/png,image/jpeg,image/webp" onChange={choose(setter as (upload: Upload) => void, resetsRevision as boolean)} />
           </div>;
         })}
       </div>
       <button className="auditButton" disabled={!ready || loading} onClick={runAudit}>{loading ? "COMPARING VISUAL EVIDENCE..." : "ANALYZE DESIGN INTENT"}</button>
+      <p aria-live="polite">{loading ? "Live analysis in progress. This can take up to 70 seconds." : ""}</p>
       <p className="privacy">Images are sent only for the requested analysis and are not stored by MotifGuard. Anonymous usage metrics never include image contents or filenames.</p>
     </section>
 
     <section className="results">
-      <div className="sectionHead"><span>02 / RESULT</span><span>{audit ? `${audit.mode === "sample" ? "CURATED SAMPLE" : "LIVE AI"} · ${audit.model}` : "WAITING"}</span></div>
-      {error && <div className="errorState"><strong>ANALYSIS UNAVAILABLE</strong><p>{error}</p><button onClick={loadSample}>OPEN VERIFIED SAMPLE</button></div>}
+      <div className="sectionHead"><span>02 / RESULT</span><span>{audit ? `${audit.mode === "sample" ? "CURATED SAMPLE" : "LIVE AI"} / ${audit.model}` : "WAITING"}</span></div>
+      {error && <div className="errorState" role="alert"><strong>ANALYSIS UNAVAILABLE</strong><p>{error}</p><button onClick={runAudit} disabled={!ready || loading}>RETRY ANALYSIS</button><button onClick={loadSample}>OPEN VERIFIED SAMPLE</button></div>}
       {!audit && !error && <div className="emptyState">Your evidence-backed audit will appear here.</div>}
       {audit && <div className="audit">
         <aside><p>INTENT FIDELITY</p><strong className="score">{audit.score}<small>/100</small></strong><h2>{audit.verdict}</h2><p>{audit.intent}</p></aside>
-        <div className="evidenceList">{audit.evidence.map(item => <article key={item.feature}><span className={item.status}>{item.status}</span><h3>{item.feature} · {Math.round(item.confidence * 100)}%</h3><p><b>Sketch:</b> {item.sourceEvidence}</p><p><b>Render:</b> {item.resultEvidence}</p><p>{item.reason}</p></article>)}</div>
+        <div className="evidenceList">{audit.evidence.map(item => <article key={item.feature}><span className={item.status}>{item.status}</span><h3>{item.feature} / {Math.round(item.confidence * 100)}%</h3><p><b>Sketch:</b> {item.sourceEvidence}</p><p><b>Render:</b> {item.resultEvidence}</p><p>{item.reason}</p></article>)}</div>
         <div className="actions"><h3>NEXT ITERATION</h3><p>{audit.brief}</p><h3>PROMPT PATCH</h3><p>{audit.promptPatch}</p>
+          {audit.mode !== "sample" && <><button className="baselineButton" onClick={copyPromptPatch}>COPY PROMPT PATCH</button><button className="baselineButton" onClick={downloadAudit}>DOWNLOAD AUDIT JSON</button></>}
           {audit.mode !== "sample" && <button className="baselineButton" onClick={() => setRevisionBaseline(audit)}>SAVE AS REVISION BASELINE</button>}
+          <p aria-live="polite">{actionNotice}</p>
         </div>
         {revisionBaseline && audit.mode !== "sample" && (() => {
           const before = evidenceCounts(revisionBaseline.evidence);
@@ -252,9 +283,9 @@ export default function Home() {
           const delta = audit.score - revisionBaseline.score;
           return <div className="revisionDelta">
             <div><p>REVISION DELTA</p><strong>{delta >= 0 ? "+" : ""}{delta}<small> points</small></strong></div>
-            <div><p>INTENT FIDELITY</p><strong>{revisionBaseline.score} → {audit.score}</strong></div>
-            <div><p>DRIFTED</p><strong>{before.drifted} → {after.drifted}</strong></div>
-            <div><p>LOST</p><strong>{before.lost} → {after.lost}</strong></div>
+            <div><p>INTENT FIDELITY</p><strong>{revisionBaseline.score} -&gt; {audit.score}</strong></div>
+            <div><p>DRIFTED</p><strong>{before.drifted} -&gt; {after.drifted}</strong></div>
+            <div><p>LOST</p><strong>{before.lost} -&gt; {after.lost}</strong></div>
             <small>Comparison uses two live audits of the same source sketch. Review individual evidence before accepting a revision.</small>
           </div>;
         })()}

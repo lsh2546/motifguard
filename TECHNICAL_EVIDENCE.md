@@ -19,6 +19,11 @@ reproducible revision loop.
 6. A user can save one live audit as a revision baseline, replace the AI render,
    and run the same source sketch again. The UI reports score, drifted-count,
    and lost-count deltas without hiding either audit's feature-level evidence.
+7. The Prompt Patch can be copied directly and the full validated audit can be
+   exported as a timestamped, versioned JSON decision artifact.
+8. Both browser and server bound inference time. The Gemini credential travels
+   in an API header rather than the request URL, and timeout failures preserve
+   the selected images for an explicit retry.
 
 Verify the implementation:
 
@@ -42,6 +47,9 @@ Verify the implementation:
   SHA-256 hashes.
 - **Claim boundaries:** controlled validation is explicitly excluded from
   audience, traction, testimonials, and user counts.
+- **Complete output contract:** verdict, intent, revision brief, prompt patch,
+  four unique evidence features, two or more statuses, per-image evidence, and
+  reasons are required in addition to the numeric range checks.
 
 ## Verified production result
 

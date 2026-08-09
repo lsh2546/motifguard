@@ -12,6 +12,11 @@ verified. A milestone is complete only when its public evidence is available.
 - Case 02 diagnosis -> revision -> re-audit loop with raw response and hashes.
 - Live revision-baseline comparison for score, drifted, and lost deltas while
   retaining both audits' feature-level evidence.
+- Copy-ready Prompt Patch and downloadable `motifguard.audit.v1` JSON artifact.
+- Bounded client/server inference timeouts, explicit retry, and API-key header
+  transport.
+- Full structured-output validation including required narrative evidence,
+  unique features, and status diversity.
 - Historical Case 03 score-contract defect preserved without retroactive repair.
 - Passing CI, contract tests, deployment commit, and artifact provenance.
 - Five-minute judge-verification path and explicit claim boundaries.

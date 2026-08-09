@@ -58,3 +58,29 @@ test("live audits can be compared as an honest revision loop", async () => {
   assert.match(page, /evidenceCounts/);
   assert.match(page, /Review individual evidence before accepting a revision/);
 });
+
+test("audit artifacts are portable and prompt guidance is actionable", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /COPY PROMPT PATCH/);
+  assert.match(page, /DOWNLOAD AUDIT JSON/);
+  assert.match(page, /motifguard\.audit\.v1/);
+  assert.match(page, /requestId/);
+});
+
+test("live inference has bounded waits and keeps the API key out of the URL", async () => {
+  const api = await readFile(new URL("../app/api/analyze/route.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(api, /"x-goog-api-key": apiKey/);
+  assert.doesNotMatch(api, /generateContent\?key=/);
+  assert.match(api, /AbortSignal\.timeout\(60_000\)/);
+  assert.match(page, /AbortSignal\.timeout\(70_000\)/);
+  assert.match(page, /RETRY ANALYSIS/);
+});
+
+test("the complete structured audit contract is validated", async () => {
+  const api = await readFile(new URL("../app/api/analyze/route.ts", import.meta.url), "utf8");
+  assert.match(api, /isNonEmptyString\(audit\.verdict\)/);
+  assert.match(api, /isNonEmptyString\(evidence\.sourceEvidence\)/);
+  assert.match(api, /features\.has/);
+  assert.match(api, /new Set\(audit\.evidence\.map/);
+});

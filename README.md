@@ -10,6 +10,12 @@
 
 MotifGuard is an AI automotive design-intent auditor. A car designer uploads a source sketch and an AI-generated render; MotifGuard shows what was preserved, changed, or lost and returns a revision brief plus a copy-ready prompt patch.
 
+Live results can be saved as a revision baseline, compared against a second
+render, copied into the next generation prompt, and downloaded as a versioned
+JSON audit artifact. Browser and server timeouts prevent indefinite waits, and
+the complete narrative and numeric response contract is validated before the
+UI accepts a result.
+
 ## Product scope
 
 Version 1 deliberately solves one problem: automotive sketch-to-render fidelity. Product design, industrial design, illustration, and concept art are future directions, not current claims.
