@@ -18,7 +18,8 @@ reproducible revision loop.
    and a copy-ready Prompt Patch. Human judgment remains in the loop.
 6. A user can save one live audit as a revision baseline, replace the AI render,
    and run the same source sketch again. The UI reports score, drifted-count,
-   and lost-count deltas without hiding either audit's feature-level evidence.
+   and lost-count deltas and renders both audits' feature, status, and confidence
+   evidence side by side.
 7. The Prompt Patch can be copied directly and the full validated audit can be
    exported as a timestamped, versioned JSON decision artifact.
 8. Both browser and server bound inference time. The Gemini credential travels
