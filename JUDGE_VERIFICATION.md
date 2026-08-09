@@ -39,6 +39,9 @@ render, revised render, upload derivatives, and raw response.
 
 ## 4. Verify engineering claims
 
+- [Technical evidence and architecture](TECHNICAL_EVIDENCE.md)
+- [Independent market-timing evidence](MARKET_EVIDENCE.md)
+- [Evidence-gated roadmap](ROADMAP.md)
 - [Production deployment provenance](docs/evidence/deployment-provenance.md)
 - [CI workflow](https://github.com/lsh2546/motifguard/actions/workflows/ci.yml)
 - [Contract tests](tests/product-contract.test.mjs)

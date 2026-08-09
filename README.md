@@ -6,6 +6,8 @@
 
 **Deployment provenance:** [verify the production commit, passing CI run, artifact hash, and deployment timestamp](docs/evidence/deployment-provenance.md).
 
+**Evidence depth:** [technical differentiation](TECHNICAL_EVIDENCE.md) · [market timing](MARKET_EVIDENCE.md) · [evidence-gated roadmap](ROADMAP.md)
+
 MotifGuard is an AI automotive design-intent auditor. A car designer uploads a source sketch and an AI-generated render; MotifGuard shows what was preserved, changed, or lost and returns a revision brief plus a copy-ready prompt patch.
 
 ## Product scope
