@@ -31,8 +31,13 @@ function hasValidAuditContract(value: unknown): value is Record<string, unknown>
 }
 
 export async function POST(request: Request) {
+  let form: FormData;
   try {
-    const form = await request.formData();
+    form = await request.formData();
+  } catch {
+    return NextResponse.json({ error: "Send the source sketch and AI render as multipart form data." }, { status: 400 });
+  }
+  try {
     const source = form.get("source");
     const result = form.get("result");
     if (!(source instanceof File) || !(result instanceof File)) return NextResponse.json({ error: "Upload both a source sketch and an AI render." }, { status: 400 });
@@ -60,7 +65,8 @@ export async function POST(request: Request) {
     if (!hasValidAuditContract(parsed)) throw new Error("invalid score or confidence contract");
     return NextResponse.json({ ...parsed, mode: "live", model, generatedAt: new Date().toISOString(), requestId: crypto.randomUUID() });
   } catch (cause) {
-    if (cause instanceof DOMException && cause.name === "TimeoutError") {
+    const name = cause && typeof cause === "object" && "name" in cause ? String(cause.name) : "";
+    if (name === "TimeoutError" || name === "AbortError") {
       return NextResponse.json({ error: "The AI analysis timed out. Please retry." }, { status: 504 });
     }
     return NextResponse.json({ error: "The AI returned an invalid result. Please retry with clearer images." }, { status: 502 });
