@@ -3,6 +3,21 @@
 This page is the shortest path for an evaluator to verify what MotifGuard does,
 what it proved, and what it has **not** proved.
 
+## Five-minute verification route
+
+| Time | Verify | Public evidence |
+| --- | --- | --- |
+| 0:00-1:00 | Open the product and run the 30-second example. Confirm that the exact Case 02 source and initial render produce the published 85/100 structured audit. | [Public product](https://motifguard.ljs2546.chatgpt.site/) |
+| 1:00-2:00 | Follow the diagnosis through Prompt Patch, revised render, and production re-audit. Confirm 85 -> 92, side character line 88% drifted -> 95% preserved, and unresolved wheel drift at 90%. | [Case 02 revision loop](docs/evidence/case-02-revision-loop.md) |
+| 2:00-3:00 | Compare the raw HTTP response to the machine-readable manifest and verify the recorded SHA-256 identities. | [Raw response](docs/evidence/case-02-reanalysis-raw-response.json) / [manifest](docs/evidence/case-02-revision-loop-manifest.json) |
+| 3:00-4:00 | Inspect the shared executable validator, negative fixtures, and passing CI. | [Technical evidence](TECHNICAL_EVIDENCE.md) / [tests](tests/product-contract.test.mjs) / [CI](https://github.com/lsh2546/motifguard/actions/workflows/ci.yml) |
+| 4:00-5:00 | Bind the public deployment to source and review privacy, claim boundaries, and known limitations. | [Deployment provenance](docs/evidence/deployment-provenance.md) / [market evidence](MARKET_EVIDENCE.md) |
+
+The route verifies one bounded claim: MotifGuard can turn a sketch/render pair
+into a structured diagnosis, revision instructions, and a comparable re-audit.
+It does not establish adoption, replace a designer, or prove that every visual
+motif will be interpreted correctly.
+
 ## 1. Use the product
 
 Open [the public MotifGuard deployment](https://motifguard.ljs2546.chatgpt.site/).
@@ -32,6 +47,26 @@ source sketch -> initial render -> 85/100 audit -> Prompt Patch -> revised rende
 The targeted side character line changed from drifted (88%) to preserved (95%).
 The wheel remained drifted (90%) and is explicitly retained as an unresolved
 finding.
+
+## What MotifGuard automates—and what remains human
+
+Without MotifGuard, a reviewer must visually compare two images, decide which
+features matter, remember or record each difference, translate those findings
+into revision instructions, and then compare a later render against the first
+review. MotifGuard automates the repeatable structure around that judgment:
+
+- payload preparation and bounded retry;
+- one named, four-feature evidence contract across the two images;
+- preserved/drifted/lost classification with source evidence, render evidence,
+  reason, and confidence;
+- a Revision Brief and copy-ready Prompt Patch;
+- a saved baseline and computed score, drifted-count, and lost-count deltas;
+- a portable JSON audit and SHA-bound public validation record.
+
+The designer still chooses the important intent, accepts or rejects the model's
+interpretation, generates the next render, and decides whether the revision is
+good enough. No manual-review time benchmark has been run, so this project does
+not claim measured time savings.
 
 ## 3. Audit the raw evidence
 
