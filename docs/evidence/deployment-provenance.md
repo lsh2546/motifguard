@@ -8,19 +8,20 @@ validated artifact used for the final judge-verification release.
 | Production URL | <https://motifguard.ljs2546.chatgpt.site/> |
 | GitHub repository | <https://github.com/lsh2546/motifguard> |
 | Source branch | `main` |
-| Source commit | [`8b16a5ad78298acc5c439d3f43b74f7f2625e375`](https://github.com/lsh2546/motifguard/commit/8b16a5ad78298acc5c439d3f43b74f7f2625e375) |
-| Final hardening PRs | [#14](https://github.com/lsh2546/motifguard/pull/14), [#15](https://github.com/lsh2546/motifguard/pull/15), [#17](https://github.com/lsh2546/motifguard/pull/17), [#18](https://github.com/lsh2546/motifguard/pull/18) |
-| PR CI run | [MotifGuard CI #21](https://github.com/lsh2546/motifguard/actions/runs/31306381733) |
+| Source commit | [`e2b1f7447b4bfd8acbc5ad9fc352d1a10b411275`](https://github.com/lsh2546/motifguard/commit/e2b1f7447b4bfd8acbc5ad9fc352d1a10b411275) |
+| Final hardening PRs | [#14](https://github.com/lsh2546/motifguard/pull/14), [#15](https://github.com/lsh2546/motifguard/pull/15), [#17](https://github.com/lsh2546/motifguard/pull/17), [#18](https://github.com/lsh2546/motifguard/pull/18), [#20](https://github.com/lsh2546/motifguard/pull/20) |
+| PR CI run | [MotifGuard CI #23](https://github.com/lsh2546/motifguard/actions/runs/31308766299) |
 | CI conclusion | `success` |
-| Sites version | `10` |
+| Sites version | `11` |
 | Deployment status | `succeeded` |
-| Deployment timestamp | `2026-08-09T09:40:06.437362Z` |
-| Sites archive SHA-256 | `0f9fc11d9594aa5d179813abda46ad2c3d0d4634ee4092718d6d0c73006f1226` |
+| Deployment timestamp | `2026-08-09T10:41:02.255475Z` |
+| Sites archive SHA-256 | `b279a93758e79f85d2c0ec69452bf165e912a3d796f532f0242cd5fb59f4d353` |
 
 The deployed UI links the Case 02 revision-loop report, raw production API
 response, and SHA-256 manifest. It also supports live revision-baseline
 comparison, Prompt Patch copying, portable JSON audit export, bounded inference
-timeouts, and explicit retries. The frozen Case 02 and Case 03 evidence files
+timeouts, and explicit retries. The verified sample uses the exact published
+Case 02 source sketch, initial render, and 85/100 audit. The frozen Case 02 and Case 03 evidence files
 and audience/traction counting rules are unchanged.
 
 ## Verification performed
@@ -28,6 +29,8 @@ and audience/traction counting rules are unchanged.
 - Production root returned HTTP 200 after deployment.
 - The deployed page contained the 85/100 initial score, 92/100 revised score,
   remaining wheel drift at 90%, and the controlled-validation boundary.
+- The 30-second sample displayed two distinct published Case 02 inputs and the
+  matching 85/100 audit; CI includes a regression test for this alignment.
 - Every public evidence document and image linked by the judge path returned
   HTTP 200.
 - The public raw response reported score 92.
