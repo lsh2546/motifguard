@@ -7,6 +7,10 @@ test("product is independently branded and exposes required evidence", async () 
   assert.match(page, /MOTIFGUARD/);
   assert.doesNotMatch(page, /FormProof|MemoryForge/i);
   for (const label of ["UNIQUE VISITORS", "VISITS", "LIVE ANALYSES", "FEEDBACK"]) assert.match(page, new RegExp(label));
+  for (const claim of ["85/100", "92/100", "drifted at 90%", "CONTROLLED DEVELOPER VALIDATION"]) assert.match(page, new RegExp(claim));
+  assert.match(page, /JUDGE_VERIFICATION\.md/);
+  assert.match(page, /case-02-reanalysis-raw-response\.json/);
+  assert.match(page, /case-02-revision-loop-manifest\.json/);
 });
 
 test("live analysis validates inputs and never embeds an API key", async () => {
