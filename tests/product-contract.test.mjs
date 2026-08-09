@@ -56,6 +56,9 @@ test("live audits can be compared as an honest revision loop", async () => {
   assert.match(page, /REVISION DELTA/);
   assert.match(page, /revisionBaseline\.score/);
   assert.match(page, /evidenceCounts/);
+  assert.match(page, /BASELINE EVIDENCE/);
+  assert.match(page, /REVISED EVIDENCE/);
+  assert.match(page, /revisionBaseline\.evidence\.map/);
   assert.match(page, /Review individual evidence before accepting a revision/);
 });
 

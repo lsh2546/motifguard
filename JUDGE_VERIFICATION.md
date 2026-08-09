@@ -15,7 +15,8 @@ Open [the public MotifGuard deployment](https://motifguard.ljs2546.chatgpt.site/
   Revision Brief plus a copy-ready Prompt Patch.
 - After a live audit, **Save as Revision Baseline** keeps that result while the
   evaluator replaces only the AI render. A second live audit then displays the
-  score, drifted-count, and lost-count deltas for the same source sketch.
+  score, drifted-count, and lost-count deltas for the same source sketch, plus
+  baseline and revised feature/status/confidence lists side by side.
 - **Copy Prompt Patch** moves the actionable instruction into the next
   generation step, while **Download Audit JSON** exports a timestamped
   `motifguard.audit.v1` decision artifact for review or archival.

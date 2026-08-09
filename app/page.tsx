@@ -286,6 +286,10 @@ export default function Home() {
             <div><p>INTENT FIDELITY</p><strong>{revisionBaseline.score} -&gt; {audit.score}</strong></div>
             <div><p>DRIFTED</p><strong>{before.drifted} -&gt; {after.drifted}</strong></div>
             <div><p>LOST</p><strong>{before.lost} -&gt; {after.lost}</strong></div>
+            <section className="revisionEvidence" aria-label="Baseline and revised feature evidence">
+              <article><h4>BASELINE EVIDENCE</h4>{revisionBaseline.evidence.map(item => <p key={`before-${item.feature}`}><b>{item.status}</b> / {item.feature} / {Math.round(item.confidence * 100)}%</p>)}</article>
+              <article><h4>REVISED EVIDENCE</h4>{audit.evidence.map(item => <p key={`after-${item.feature}`}><b>{item.status}</b> / {item.feature} / {Math.round(item.confidence * 100)}%</p>)}</article>
+            </section>
             <small>Comparison uses two live audits of the same source sketch. Review individual evidence before accepting a revision.</small>
           </div>;
         })()}
