@@ -21,6 +21,34 @@ human control is supported by current standards work and design research.
   for Aligning Generative AI with Creative Intent](https://dis.acm.org/2026/wp-content/uploads/2026/06/toc.html),
   identifying misalignment between generated results and user intentions as an
   active human-computer interaction problem.
+- [NIST's AI test, evaluation, validation, and verification program](https://www.nist.gov/ai-test-evaluation-validation-and-verification-tevv)
+  states that trustworthy AI products depend on reliable measurement and that
+  evaluation must be interpreted in the context in which a system is used.
+- BMW's official description of its [design DNA](https://www.press.bmwgroup.com/global/article/attachment/T0124586EN/194118)
+  identifies proportions, surfaces, and details as the interplay that creates a
+  recognizable vehicle character. This supports auditing specific design
+  decisions rather than treating photorealism as the only success criterion.
+- BMW's current [Neue Klasse design-language explanation](https://www.bmwgroup.com/en/news/general/2025/bmw-ix3-design-language.html)
+  explicitly connects hallmark proportions, precise lines, reduced surfaces,
+  and a light signature to brand-distinctive vehicle design.
+
+## The specific market gap
+
+The cited sources establish three adjacent facts rather than a broad claim that
+"AI is growing":
+
+1. Generative systems require contextual measurement and evaluation.
+2. Concept-sketch users judge more than realism, while common image-generation
+   quality measures can miss those expectations.
+3. In automotive design, proportions, surfaces, precise lines, details, and
+   light signatures are identity-bearing decisions.
+
+The resulting gap is narrow: a polished sketch-to-render result can look
+successful while silently changing the design decisions a reviewer cares
+about. MotifGuard occupies the review step between generation and acceptance.
+It does not generate the car, score market desirability, or replace a design
+review; it makes the intended visual comparison structured, actionable, and
+auditable.
 
 ## MotifGuard's practical response
 
@@ -34,3 +62,10 @@ The public [Case 02 evidence](docs/evidence/case-02-revision-loop.md) demonstrat
 that path under a frozen score contract, while preserving the unresolved wheel
 drift and the original failure record. This is a working product response to a
 documented evaluation gap, not a forecast of future capability.
+
+Case 02 maps the market argument to a falsifiable product result. The audit
+identified a side character-line drift, generated a revision instruction, and
+the re-audit recorded that feature as preserved. It also retained the remaining
+wheel drift. That partial result is important: the product is a verification
+layer for an iterative workflow, not a guarantee that one prompt fixes an
+entire design.

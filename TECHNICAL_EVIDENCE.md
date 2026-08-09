@@ -4,6 +4,21 @@ MotifGuard is not a generic image captioner. It is a constrained audit pipeline
 that turns two visual inputs into a contract-validated decision artifact and a
 reproducible revision loop.
 
+## One verification chain
+
+An evaluator does not have to reconcile separate marketing and engineering
+claims. The complete technical identity follows one public chain:
+
+`production UI -> raw API response -> shared validator -> SHA-256 manifest -> CI fixtures -> source commit -> deployment provenance`
+
+Start at [Judge Verification](JUDGE_VERIFICATION.md), then inspect the
+[raw Case 02 response](docs/evidence/case-02-reanalysis-raw-response.json),
+[manifest](docs/evidence/case-02-revision-loop-manifest.json),
+[executable tests](tests/product-contract.test.mjs), and
+[deployment provenance](docs/evidence/deployment-provenance.md). This route
+exposes the successful result, negative cases, exact assets, code identity, and
+production identity without relying on a screenshot or narrative alone.
+
 ## Auditable pipeline
 
 1. The browser prepares each PNG, JPEG, or WebP upload under a measured payload
@@ -74,3 +89,17 @@ hash, and production timestamp.
   and optional feedback, never image contents or filenames.
 - The curated sample is excluded from live-analysis counts.
 - No independent-user, time-saving, revenue, or adoption claim is made.
+
+## Reliability claims are bounded
+
+- Upload compression and one smaller 413 retry reduce payload failures; they do
+  not guarantee that every image can be accepted.
+- Browser and server timeouts bound a request; they do not guarantee upstream
+  model availability or deterministic model output.
+- Malformed and contract-invalid output fails visibly instead of being coerced
+  into a score.
+- The published revision result is a controlled developer-validation case, not
+  an independent-user outcome.
+- The raw response and hashes make the published run reproducible as evidence;
+  they do not claim that a stochastic model will reproduce identical prose on
+  every future request.
