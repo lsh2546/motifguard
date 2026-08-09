@@ -10,6 +10,8 @@ verified. A milestone is complete only when its public evidence is available.
 - Browser-side payload control and graceful HTTP 413 retry.
 - Separate 0-100 overall score and 0-1 evidence-confidence contracts.
 - Case 02 diagnosis -> revision -> re-audit loop with raw response and hashes.
+- Live revision-baseline comparison for score, drifted, and lost deltas while
+  retaining both audits' feature-level evidence.
 - Historical Case 03 score-contract defect preserved without retroactive repair.
 - Passing CI, contract tests, deployment commit, and artifact provenance.
 - Five-minute judge-verification path and explicit claim boundaries.

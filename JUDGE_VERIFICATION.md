@@ -13,6 +13,9 @@ Open [the public MotifGuard deployment](https://motifguard.ljs2546.chatgpt.site/
 - A live comparison accepts one source sketch and one AI-generated render.
 - The result separates preserved, drifted, and lost evidence and returns a
   Revision Brief plus a copy-ready Prompt Patch.
+- After a live audit, **Save as Revision Baseline** keeps that result while the
+  evaluator replaces only the AI render. A second live audit then displays the
+  score, drifted-count, and lost-count deltas for the same source sketch.
 
 ## 2. Verify that the result can change an action
 
@@ -51,7 +54,8 @@ render, revised render, upload derivatives, and raw response.
 
 The tests distinguish the 0-100 overall score from 0-1 evidence confidence,
 reject malformed model output, ensure sample runs are not counted as live
-analyses, and verify graceful handling of oversized uploads.
+analyses, verify graceful handling of oversized uploads, and enforce the live
+revision-comparison contract.
 
 The provenance record binds the public deployment to its exact GitHub commit,
 successful CI run, packaged artifact hash, and deployment timestamp.

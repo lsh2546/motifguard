@@ -16,6 +16,9 @@ reproducible revision loop.
    non-JSON errors fail explicitly instead of being silently coerced.
 5. The result exposes preserved, drifted, and lost evidence, a Revision Brief,
    and a copy-ready Prompt Patch. Human judgment remains in the loop.
+6. A user can save one live audit as a revision baseline, replace the AI render,
+   and run the same source sketch again. The UI reports score, drifted-count,
+   and lost-count deltas without hiding either audit's feature-level evidence.
 
 Verify the implementation:
 
@@ -29,7 +32,9 @@ Verify the implementation:
 - **Evidence before claims:** raw model output is preserved before narrative
   interpretation, and original evidence is never retrospectively rewritten.
 - **Closed-loop measurement:** the same audit contract evaluates an initial
-  render and a revision produced from the audit's own Prompt Patch.
+  render and a revision produced from the audit's own Prompt Patch. The public
+  product can compare those two live audits directly instead of requiring a
+  manual score transcription.
 - **Failure transparency:** the first Case 02 HTTP 413 and the historical Case
   03 score-contract defect remain public.
 - **Machine-verifiable identity:** source, renders, upload derivatives, raw API
