@@ -51,6 +51,8 @@ Verify the implementation:
 - **Complete output contract:** verdict, intent, revision brief, prompt patch,
   four unique evidence features, two or more statuses, per-image evidence, and
   reasons are required in addition to the numeric range checks.
+- **One executable validator:** client and server import the same contract, and
+  CI executes positive and negative fixtures against the actual function.
 
 ## Verified production result
 

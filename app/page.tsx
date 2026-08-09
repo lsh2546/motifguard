@@ -1,31 +1,15 @@
 "use client";
 
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { hasValidAuditContract } from "@/lib/audit-contract.mjs";
 
 type Evidence = { feature: string; status: "preserved" | "drifted" | "lost"; sourceEvidence: string; resultEvidence: string; reason: string; confidence: number };
 type Audit = { score: number; verdict: string; intent: string; evidence: Evidence[]; brief: string; promptPatch: string; mode?: string; model?: string; generatedAt?: string; requestId?: string };
 type Metrics = { visitors: number; visits: number; analyses: number; feedback: number };
 type Upload = { file: File | null; url: string | null };
 
-const inRange = (value: unknown, minimum: number, maximum: number) =>
-  typeof value === "number" && Number.isFinite(value) && value >= minimum && value <= maximum;
-const isText = (value: unknown) => typeof value === "string" && value.trim().length > 0;
-
 function isAudit(payload: Record<string, unknown>): payload is Audit & Record<string, unknown> {
-  if (!inRange(payload.score, 0, 100)
-    || !isText(payload.verdict) || !isText(payload.intent) || !isText(payload.brief) || !isText(payload.promptPatch)
-    || !Array.isArray(payload.evidence) || payload.evidence.length !== 4) return false;
-  const features = new Set<string>();
-  const valid = payload.evidence.every(item => {
-    if (!item || typeof item !== "object") return false;
-    const evidence = item as Record<string, unknown>;
-    if (!isText(evidence.feature) || features.has(String(evidence.feature).trim().toLowerCase())) return false;
-    features.add(String(evidence.feature).trim().toLowerCase());
-    return ["preserved", "drifted", "lost"].includes(String(evidence.status))
-      && inRange(evidence.confidence, 0, 1)
-      && isText(evidence.sourceEvidence) && isText(evidence.resultEvidence) && isText(evidence.reason);
-  });
-  return valid && new Set(payload.evidence.map(item => String((item as Record<string, unknown>).status))).size >= 2;
+  return hasValidAuditContract(payload);
 }
 
 const acceptedImageTypes = new Set(["image/png", "image/jpeg", "image/webp"]);

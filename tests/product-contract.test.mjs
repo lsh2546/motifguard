@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { hasValidAuditContract } from "../lib/audit-contract.mjs";
 
 test("product is independently branded and exposes required evidence", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
@@ -29,13 +30,14 @@ test("sample runs are not counted as live analyses", async () => {
 test("overall score and evidence confidence use explicit separate ranges", async () => {
   const route = await readFile(new URL("../app/api/analyze/route.ts", import.meta.url), "utf8");
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const contract = await readFile(new URL("../lib/audit-contract.mjs", import.meta.url), "utf8");
   assert.match(route, /overall score must be a finite number from 0 through 100 inclusive/i);
   assert.match(route, /Do not return the overall score as a 0-to-1 normalized fraction/);
   assert.match(route, /Evidence confidence uses a separate contract/);
-  assert.match(route, /isFiniteNumberInRange\(audit\.score, 0, 100\)/);
-  assert.match(route, /isFiniteNumberInRange\(evidence\.confidence, 0, 1\)/);
-  assert.match(page, /inRange\(payload\.score, 0, 100\)/);
-  assert.match(page, /inRange\(evidence\.confidence, 0, 1\)/);
+  assert.match(contract, /inRange\(audit\.score, 0, 100\)/);
+  assert.match(contract, /inRange\(item\.confidence, 0, 1\)/);
+  assert.match(route, /hasValidAuditContract\(parsed\)/);
+  assert.match(page, /hasValidAuditContract\(payload\)/);
   assert.match(page, /\{audit\.score\}<small>\/100<\/small>/);
   assert.match(page, /Math\.round\(item\.confidence \* 100\)\}%/);
 });
@@ -84,9 +86,18 @@ test("live inference has bounded waits and keeps the API key out of the URL", as
 });
 
 test("the complete structured audit contract is validated", async () => {
-  const api = await readFile(new URL("../app/api/analyze/route.ts", import.meta.url), "utf8");
-  assert.match(api, /isNonEmptyString\(audit\.verdict\)/);
-  assert.match(api, /isNonEmptyString\(evidence\.sourceEvidence\)/);
-  assert.match(api, /features\.has/);
-  assert.match(api, /new Set\(audit\.evidence\.map/);
+  const evidence = [
+    { feature: "Silhouette", status: "preserved", sourceEvidence: "low roof", resultEvidence: "low roof", reason: "stance", confidence: .9 },
+    { feature: "Shoulder", status: "drifted", sourceEvidence: "rising", resultEvidence: "flat", reason: "motion", confidence: .8 },
+    { feature: "Graphic", status: "preserved", sourceEvidence: "slash", resultEvidence: "slash", reason: "identity", confidence: .85 },
+    { feature: "Wheel", status: "drifted", sourceEvidence: "turbine", resultEvidence: "generic", reason: "detail", confidence: .75 },
+  ];
+  const valid = { score: 85, verdict: "Partial fidelity", intent: "Preserve motion", evidence, brief: "Restore shoulder", promptPatch: "Keep the rising shoulder" };
+  assert.equal(hasValidAuditContract(valid), true);
+  assert.equal(hasValidAuditContract({ ...valid, score: .85 }), true, "0.85 is valid on the explicit 0-100 scale");
+  assert.equal(hasValidAuditContract({ ...valid, score: 101 }), false);
+  assert.equal(hasValidAuditContract({ ...valid, brief: "" }), false);
+  assert.equal(hasValidAuditContract({ ...valid, evidence: evidence.map(item => ({ ...item, status: "preserved" })) }), false);
+  assert.equal(hasValidAuditContract({ ...valid, evidence: evidence.map((item, index) => ({ ...item, feature: index ? item.feature : "Shoulder" })) }), false);
+  assert.equal(hasValidAuditContract({ ...valid, evidence: evidence.map((item, index) => ({ ...item, confidence: index ? item.confidence : 1.1 })) }), false);
 });
