@@ -37,6 +37,20 @@ MotifGuard currently publishes two controlled developer-validation cases. They d
 | Case 02 | 85/100 | 2 | 2 | 0 | [Panel](docs/evidence/case-02-evidence-panel-1600x900.png) · [Result JSON](docs/evidence/case-02-result.json) |
 | Case 03 | 92/100 | 3 | 1 | 0 | [Panel](docs/evidence/case-03-evidence-panel-1600x900.png) · [Raw API response](docs/evidence/case-03-api-analyze-raw-response.json) · [Manifest](docs/evidence/case-03-manifest.json) |
 
+### Audited revision loop
+
+Case 02 now includes a complete, public source-to-revision proof. MotifGuard's
+initial audit scored the render at 85/100 and identified two drifts. Applying
+the generated Prompt Patch produced a revised render that scored 92/100: the
+side character line changed from drifted (88%) to preserved (95%), while the
+wheel remained drifted (90%). The unresolved wheel finding is retained rather
+than presented as a success.
+
+[Review the images, raw production response, hashes, failure record, and machine-readable manifest.](docs/evidence/case-02-revision-loop.md)
+
+This is controlled developer validation. It is not counted as an independent
+user, testimonial, audience reach, return usage, or traction.
+
 Case 03 is the controlled score-contract verification: the production API returned HTTP 200 with raw score `92`, and the UI displayed `92/100`. The historical `0.85/100` display remains a historical record and is not retrospectively converted to 85.
 
 The production dashboard currently contains mixed operational telemetry from developer checks and controlled validation. The verified independent-user ledger remains: **0 users, 0 completed real-user analyses, 0 return users, and 0 consented testimonials**.
