@@ -75,6 +75,9 @@ test("live inference has bounded waits and keeps the API key out of the URL", as
   assert.match(api, /AbortSignal\.timeout\(60_000\)/);
   assert.match(page, /AbortSignal\.timeout\(70_000\)/);
   assert.match(page, /RETRY ANALYSIS/);
+  assert.match(api, /Send the source sketch and AI render as multipart form data/);
+  assert.match(api, /name === "TimeoutError" \|\| name === "AbortError"/);
+  assert.doesNotMatch(api, /instanceof DOMException/);
 });
 
 test("the complete structured audit contract is validated", async () => {
