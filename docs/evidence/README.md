@@ -2,6 +2,9 @@
 
 All files in this directory are controlled developer-validation evidence and are ineligible for traction counts.
 
+The [production deployment provenance](deployment-provenance.md) binds the
+judge-facing release to its GitHub commit, CI run, artifact hash, and timestamp.
+
 | File | Purpose |
 | --- | --- |
 | `case-02-evidence-panel-1600x900.png` | One-screen Case 02 evidence panel |
